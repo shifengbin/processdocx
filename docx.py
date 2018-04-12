@@ -142,7 +142,7 @@ class Docx(IdAble):
         self._save_styles()
 
         file = ZipFile(name, "w", compression=zipfile.ZIP_DEFLATED)
-        for base, children,files in os.walk(self.file_path):
+        for base, children, files in os.walk(self.file_path):
             base_name = base.split(self.base_dir)[-1]
             for f in files:
                 zip_path = os.path.join(base_name, f)
@@ -179,8 +179,8 @@ class Docx(IdAble):
 
 
 if __name__ == "__main__":
-    doc = Docx("1.docx")
-    doc2 = Docx("a.docx")
+    doc = Docx("a.docx")
+    doc2 = Docx("1.docx")
     '''
     document = doc.get_document()
     contents = document.get_content()
@@ -191,7 +191,8 @@ if __name__ == "__main__":
         doc.save("a/{}.docx".format(count))
         count += 1
     '''
-    doc.merge(doc2, True)
+    #doc.merge(doc2, True)
+    doc.merge(doc2)
     doc.save("aaaa.docx")
     doc.close()
     doc2.close()
