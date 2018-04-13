@@ -55,7 +55,7 @@ class Paragraph:
             blip.name = "a:"+ blip.name
         stretchs = self.dom.find_all("stretch")
         for stretch in stretchs:
-            stretch.name = "a:stretch"+stretch.name
+            stretch.name = "a:"+stretch.name
         fillrects = self.dom.find_all("fillRect")
         for fillrect in fillrects:
             fillrect.name = "a:"+fillrect.name

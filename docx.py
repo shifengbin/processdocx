@@ -191,8 +191,8 @@ if __name__ == "__main__":
         doc.save("a/{}.docx".format(count))
         count += 1
     '''
-    #doc.merge(doc2, True)
-    doc.merge(doc2)
+    doc.merge(doc2, True)
+    #doc.merge(doc2)
     doc.save("aaaa.docx")
     doc.close()
     doc2.close()
