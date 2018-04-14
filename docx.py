@@ -99,10 +99,13 @@ class Docx(IdAble):
         relationships = self.get_relationships()
         file_mapping = relationships.get_file_mapping()
         template = "cp {} {}"
+
         base_dir = os.path.join(self.file_path, "word")
+        print(file_mapping)
         for file in file_mapping.keys():
             from_file = os.path.join(base_dir, file)
             to_file = os.path.join(path, file_mapping[file])
+
             dir_name = os.path.dirname(to_file)
             if not os.path.exists(dir_name):
                 os.makedirs(dir_name)
@@ -116,6 +119,7 @@ class Docx(IdAble):
         self.get_content_types().merge_content_types(source_content_types)
 
         source_relationships = doc.get_relationships()
+        #print(source_relationships.get_file_mapping())
         source_relationships.generate_id(doc.id)
         doc.extract_media_files(os.path.join(self.file_path, "word"))
         self.get_relationships().merge_relationships(source_relationships)
@@ -180,7 +184,7 @@ class Docx(IdAble):
 
 if __name__ == "__main__":
     doc = Docx("a.docx")
-    doc2 = Docx("1.docx")
+    doc2 = Docx("bbbb.docx")
     '''
     document = doc.get_document()
     contents = document.get_content()
@@ -193,6 +197,6 @@ if __name__ == "__main__":
     '''
     doc.merge(doc2, True)
     #doc.merge(doc2)
-    doc.save("aaaa.docx")
+    doc.save("bbbb.docx")
     doc.close()
     doc2.close()

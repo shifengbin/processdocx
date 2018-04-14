@@ -29,6 +29,7 @@ class Relationships:
         if self.file_mapping:
             return self.file_mapping
         rs = self.get_relationships()
+
         file_mapping = dict()
 
         for r in rs:
@@ -41,11 +42,8 @@ class Relationships:
             self.file_mapping = dict()
 
         for rs in self.get_relationships():
-            #temp_id = rs["Id"].split("_")
-            #temp_id = temp_id[0]+"_"+suffix
-            #rs["Id"] = temp_id
             rs["Id"] = generate_id(rs["Id"], suffix)
-
+            source = rs['Target']
             temp_target = rs['Target'].split("_")
             if len(temp_target) > 1:
                 temp_target = temp_target[0] + "_" + suffix + "." + temp_target[1].split(".")[-1]
@@ -53,8 +51,10 @@ class Relationships:
                 temp = temp_target[0].split(".")
                 temp_target = temp[0] + "_" + suffix + "." + temp[-1]
             rs['Target'] = temp_target
-            temp_name = temp_target.split("_"+suffix)
-            self.file_mapping[temp_name[0]+temp_name[-1]] = temp_target
+            #temp_name = temp_target.split("_"+suffix)
+            #self.file_mapping[temp_name[0]+temp_name[-1]] = temp_target
+            self.file_mapping[source] = temp_target
+
 
 
 if __name__ == "__main__":
