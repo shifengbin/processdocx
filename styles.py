@@ -25,6 +25,9 @@ class Styles:
             link = style.find("link")
             if link:
                 link["w:val"] = generate_id(link["w:val"], suffix)
+            num_id = style.find("numId")
+            if num_id:
+                num_id["w:val"] = generate_id(num_id["w:val"], suffix)
 
     def merge(self, styles):
         styles_source = styles.get_styles()

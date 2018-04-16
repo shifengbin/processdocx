@@ -79,8 +79,6 @@ class Paragraph:
             avlst.name = "a:"+avlst.name
 
 
-
-
 class Document:
     def __init__(self, document):
         if not isinstance(document, BeautifulSoup):

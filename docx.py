@@ -183,20 +183,21 @@ class Docx(IdAble):
 
 
 if __name__ == "__main__":
-    doc = Docx("a.docx")
-    doc2 = Docx("bbbb.docx")
-    '''
-    document = doc.get_document()
-    contents = document.get_content()
-    count = 0
-    for content in contents:
-        document.clear_content()
-        document.append_content(content.get_dom())
-        doc.save("a/{}.docx".format(count))
-        count += 1
-    '''
-    doc.merge(doc2, True)
-    #doc.merge(doc2)
-    doc.save("bbbb.docx")
-    doc.close()
-    doc2.close()
+    for x in range(1000):
+        doc = Docx("bbbb.docx")
+        doc2 = Docx("bbbb.docx")
+        '''
+        document = doc.get_document()
+        contents = document.get_content()
+        count = 0
+        for content in contents:
+            document.clear_content()
+            document.append_content(content.get_dom())
+            doc.save("a/{}.docx".format(count))
+            count += 1
+        '''
+        doc.merge(doc2, True)
+        #doc.merge(doc2)
+        doc.save("bbbb.docx")
+        doc.close()
+        doc2.close()
