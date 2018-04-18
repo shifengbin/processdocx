@@ -101,7 +101,7 @@ class Docx(IdAble):
         template = "cp {} {}"
 
         base_dir = os.path.join(self.file_path, "word")
-        print(file_mapping)
+        #print(file_mapping)
         for file in file_mapping.keys():
             from_file = os.path.join(base_dir, file)
             to_file = os.path.join(path, file_mapping[file])
@@ -182,22 +182,41 @@ class Docx(IdAble):
         os.system("rm -rf {0}".format(self.file_path))
 
 
+def merge_files(filespath, to_filename, page=False):
+    if type(filespath) != list:
+        raise Exception("filespath not list")
+    merge_list = []
+    index = 0
+    for filename in filespath:
+        if not os.path.exists(filename):
+            continue
+        docx = Docx(filename)
+        #docx.id = str(index)
+        index += 1
+        merge_list.append(docx)
+    root = merge_list[0]
+    for docx in merge_list[1:]:
+        root.merge(docx, page)
+        docx.close()
+    root.save(to_filename)
+    root.close()
+
 if __name__ == "__main__":
-    for x in range(1000):
-        doc = Docx("bbbb.docx")
-        doc2 = Docx("bbbb.docx")
-        '''
-        document = doc.get_document()
-        contents = document.get_content()
-        count = 0
-        for content in contents:
-            document.clear_content()
-            document.append_content(content.get_dom())
-            doc.save("a/{}.docx".format(count))
-            count += 1
-        '''
-        doc.merge(doc2, True)
-        #doc.merge(doc2)
-        doc.save("bbbb.docx")
-        doc.close()
-        doc2.close()
+    '''
+    doc = Docx("1.docx")
+
+    document = doc.get_document()
+    contents = document.get_content()
+    count = 0
+    for content in contents:
+        document.clear_content()
+        document.append_content(content.get_dom())
+        doc.save("a/{}.docx".format(count))
+        count += 1
+    doc.close()
+    '''
+    #merge_files(["a/0.docx", "a/1.docx", "a/2.docx", "a/3.docx"], "bb.docx")
+    #merge_files(["bb.docx", "bb.docx"], "bb.docx")
+    #merge_files(["1.docx", "a.docx", "bb.docx"], "bb.docx")
+    for x in range(2):
+        merge_files(["1.docx", "123456.docx", "654321.docx", "bb.docx"], "bb.docx")

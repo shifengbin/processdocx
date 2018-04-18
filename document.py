@@ -110,6 +110,9 @@ class Document:
         pstyles = self.document.find_all("pStyle")
         for style in pstyles:
             style["w:val"] = generate_id(style["w:val"], suffix)
+        tables = self.document.find_all("tblStyle")
+        for table in tables:
+            table["w:val"] = generate_id(table["w:val"], suffix)
 
     def generate_media_id(self, suffix):
         medias = self.document.find_all("blip")
@@ -133,7 +136,9 @@ class Document:
         self.document.attrs.update(document.get_dom().attrs)
         source_content = document.get_content()
         self_content = self.get_content()
-        section = self.document.find("sectPr").extract()
+        section = self.document.find("sectPr")
+        if section:
+            section = section.extract()
         body = self.document.find("body")
 
         body.clear()
@@ -146,8 +151,8 @@ class Document:
 
         for src_content in source_content:
             body.append(src_content.get_dom())
-        
-        body.append(section)
+        if section:
+            body.append(section)
 
 
 

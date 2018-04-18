@@ -1,4 +1,4 @@
-from idmanager import generate_id
+from idmanager import generate_id, generate_file_name
 
 
 class Relationships:
@@ -44,17 +44,9 @@ class Relationships:
         for rs in self.get_relationships():
             rs["Id"] = generate_id(rs["Id"], suffix)
             source = rs['Target']
-            temp_target = rs['Target'].split("_")
-            if len(temp_target) > 1:
-                temp_target = temp_target[0] + "_" + suffix + "." + temp_target[1].split(".")[-1]
-            else:
-                temp = temp_target[0].split(".")
-                temp_target = temp[0] + "_" + suffix + "." + temp[-1]
+            temp_target = generate_file_name(source, suffix)
             rs['Target'] = temp_target
-            #temp_name = temp_target.split("_"+suffix)
-            #self.file_mapping[temp_name[0]+temp_name[-1]] = temp_target
             self.file_mapping[source] = temp_target
-
 
 
 if __name__ == "__main__":
