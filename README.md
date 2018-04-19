@@ -26,7 +26,7 @@ if __name__ == "__main__":
 > 可以一次合并多个文档,每个文档可以独立成页,也可以直接合并
  
 ```python
-from docxlib.docx import merge_files
+from docx import merge_files
 if __name__ == "__main__":
   merge_files(["1.docx", "2.docx", "3.docx", "a.docx"], "bb.docx", True)
   #第一个参数是文档路径列表, 第二个是合并后保存文件的路径, 第三个参数是合并时是否分页,不填默认False
@@ -36,3 +36,18 @@ if __name__ == "__main__":
 
 > 可以添加文字,图片,选择居左居右居中
 
+```python
+from docx import make_new_document
+if __name__ == "__main__":
+    doc = make_new_document()
+    doc.append_paragraph("aaaaa", "center")
+    doc.append_paragraph("bbb", "left")
+    doc.append_paragraph("ccc", "right")
+    doc.append_picture("./1.png", "left")
+    doc.append_picture("./1.png", "left")
+    doc.append_picture("./2.png", "left")
+    doc.append_picture("./2.png", "center")
+    doc.append_paragraph("ddd", "right")
+    doc.save("bbb.docx")
+    doc.close()
+```
