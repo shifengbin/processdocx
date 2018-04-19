@@ -12,11 +12,11 @@ class ContentTypes:
 
     def get_types_dom(self):
         types = []
-        for types in self.content.find("Types").children:
-            if "Extension" in types:
-                self.extension[types["Extension"]] = True
-            if "header" not in types["ContentType"] and "footer" not in types["ContentType"]:
-                types.append(types)
+        for type_ in self.content.find("Types").children:
+            if "Extension" in type_:
+                self.extension[type_["Extension"]] = True
+            if "header" not in type_["ContentType"] and "footer" not in type_["ContentType"]:
+                types.append(type_)
 
         #print(types)
         return types
