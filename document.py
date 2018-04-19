@@ -1,11 +1,18 @@
 from bs4 import BeautifulSoup
 from idmanager import generate_id
+from template import get_text_dom, get_image_dom, get_image_dom2
 
-PAGE_TAG = BeautifulSoup('<root xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:r><w:br w:type="page"/></w:r></w:p></root>', 'xml')
-PAGE_TAG = PAGE_TAG.find("p")
 
 NAMESPACE_A = {"xmlns:a":"http://schemas.openxmlformats.org/drawingml/2006/main"}
 NAMESPACE_PIC = {"xmlns:pic":"http://schemas.openxmlformats.org/drawingml/2006/picture"}
+
+
+def get_break_page():
+    tag = BeautifulSoup(
+        '<root xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:r><w:br w:type="page"/></w:r></w:p></root>',
+        'xml')
+    return tag.find("p")
+
 
 class Paragraph:
     def __init__(self, dom):
@@ -106,10 +113,16 @@ class Document:
     def get_dom(self):
         return self.document
 
+    def generate_numbers(self, num):
+        numbers = self.document.find_all("numId")
+        for number in numbers:
+            number["w:val"] = generate_id(number["w:val"], num, "")
+
     def generate_style_id(self, suffix):
         pstyles = self.document.find_all("pStyle")
         for style in pstyles:
             style["w:val"] = generate_id(style["w:val"], suffix)
+
         tables = self.document.find_all("tblStyle")
         for table in tables:
             table["w:val"] = generate_id(table["w:val"], suffix)
@@ -127,10 +140,11 @@ class Document:
         for ole in oles:
             ole["r:id"] = generate_id(ole["r:id"], suffix)
 
-    def generate_id(self, suffix):
+    def generate_id(self, suffix, number):
         self.generate_style_id(suffix)
         self.generate_media_id(suffix)
         self.generate_object_id(suffix)
+        self.generate_numbers(number)
 
     def merge(self, document, page=False):
         self.document.attrs.update(document.get_dom().attrs)
@@ -147,15 +161,27 @@ class Document:
             body.append(s_content.get_dom())
         
         if page:
-            body.append(PAGE_TAG)
+            body.append(get_break_page())
 
         for src_content in source_content:
             body.append(src_content.get_dom())
         if section:
             body.append(section)
 
+    def append_paragraph(self, text, align):
+        section = self.document.find("sectPr")
+        if section:
+            section.insert_before(get_text_dom(text, align))
+        else:
+            self.document.find("body").append(get_text_dom(text, align))
 
-
-
-
-
+    def append_picture(self, rid, width, height, align):
+        dom = get_image_dom(rid, width, height, align)
+        #dom = get_image_dom2(rid, width, height, align)
+        #p = Paragraph(dom)
+        #dom = p.dom
+        section = self.document.find("sectPr")
+        if section:
+            section.insert_before(dom)
+        else:
+            self.document.find("body").append(dom)

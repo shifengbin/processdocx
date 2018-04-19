@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from zipfile import ZipFile
 from uuid import uuid1
 import os
+from PIL import Image
 
 from idmanager import IdAble
 from document import Document
@@ -129,11 +130,11 @@ class Docx(IdAble):
         self.styles.merge(source_styles)
 
         source_numberings = doc.get_numbering()
-        source_numberings.generate_id(doc.id)
+        source_numberings.generate_id(doc.num)
         self.numbering.merge(source_numberings)
 
         source_document = doc.get_document()
-        source_document.generate_id(doc.id)
+        source_document.generate_id(doc.id, doc.num)
         self.get_document().merge(source_document, page)
 
     def save(self, name):
@@ -178,6 +179,26 @@ class Docx(IdAble):
         with open(os.path.join(self.file_path, "word/styles.xml"), "w+", encoding="UTF-8") as f:
             f.write(str(self.styles.get_dom()))
 
+    def append_paragraph(self, text, align="left"):
+        self.document.append_paragraph(text, align)
+
+    def append_picture(self, filepath, align="left"):
+        if not os.path.exists(filepath):
+            return
+        media_dir = os.path.join(self.file_path, "word/media")
+        if not os.path.exists(media_dir):
+            os.mkdir(media_dir)
+        suffix = filepath.split(".")[-1]
+        self.content_types.append_extension(suffix)
+        id_file = self.relationships.append_relationship(suffix)
+        #print(id_file)
+        file_path = os.path.join(self.file_path, "word/media/{filename}".format(filename=id_file["filename"]))
+        os.system("cp {f_file} {t_file}".format(f_file=filepath, t_file=file_path))
+        img = Image.open(file_path)
+        width, height = img.size
+        img.close()
+        self.document.append_picture(id_file["rid"], width*6350, height*6350, align)
+
     def close(self):
         os.system("rm -rf {0}".format(self.file_path))
 
@@ -201,6 +222,11 @@ def merge_files(filespath, to_filename, page=False):
     root.save(to_filename)
     root.close()
 
+
+def make_new_document():
+    template = os.path.join(os.path.dirname(__file__), "templates/template.docx")
+    return Docx(template)
+
 if __name__ == "__main__":
     '''
     doc = Docx("1.docx")
@@ -216,7 +242,21 @@ if __name__ == "__main__":
     doc.close()
     '''
     #merge_files(["a/0.docx", "a/1.docx", "a/2.docx", "a/3.docx"], "bb.docx")
-    #merge_files(["bb.docx", "bb.docx"], "bb.docx")
-    #merge_files(["1.docx", "a.docx", "bb.docx"], "bb.docx")
-    for x in range(2):
-        merge_files(["1.docx", "123456.docx", "654321.docx", "bb.docx"], "bb.docx")
+    #merge_files(["1.docx", "123456.docx", "654321.docx"], "bb.docx", True)
+    #merge_files(["1.docx", "a.docx", "bbb.docx"], "bb.docx", True)
+    #for x in range(2):
+    #    merge_files(["1.docx", "123456.docx", "654321.docx", "bb.docx"], "bb.docx")
+    #print(__file__)
+
+    doc = make_new_document()
+    doc.append_paragraph("aaaaa", "center")
+    doc.append_paragraph("bbb", "left")
+    doc.append_paragraph("ccc", "right")
+    doc.append_picture("./1.png", "left")
+    doc.append_picture("./1.png", "left")
+    doc.append_picture("./2.png", "left")
+    doc.append_picture("./2.png", "center")
+    doc.append_paragraph("ddd", "right")
+    doc.save("bbb.docx")
+    doc.close()
+
