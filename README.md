@@ -6,7 +6,7 @@
 
 > 可以按段落拆分,也可以提取文字
  
-```
+```python
 from docx import Docx
 if __name__ == "__main__":
     doc = Docx("1.docx")
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
 > 可以一次合并多个文档,每个文档可以独立成页,也可以直接合并
  
-```
+```python
 from docxlib.docx import merge_files
 if __name__ == "__main__":
   merge_files(["1.docx", "2.docx", "3.docx", "a.docx"], "bb.docx", True)
