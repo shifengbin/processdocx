@@ -1,6 +1,6 @@
 # processdocx
 ### processdocx 是一个处理docx文件的库
-##主要功能
+## 主要功能
 
 1 文档拆分
 
